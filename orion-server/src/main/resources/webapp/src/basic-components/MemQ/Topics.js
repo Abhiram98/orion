@@ -73,6 +73,7 @@ export default function Topics(props) {
       batchSizeMB: topicInfoRow.config.batchSizeMB,
       configs: topicInfoRow.configs,
       storageConfigs: topicInfoRow.config.storageHandlerConfig,
+      storageHandlerName: topicInfoRow.config.storageHandlerName,
       raw: topicInfoRow,
     };
   });
@@ -123,6 +124,8 @@ export default function Topics(props) {
     { title: "BufferSize", field: "bufferSize" },
     { title: "BatchMilliseconds", field: "batchMilliSeconds" },
     { title: "BatchSizeMB", field: "batchSizeMB" },
+    { title: "StorageHandler", field: "storageHandlerName" },
+    { title: "bucket", field: "bucket" },
   ];
 
   const exportAsJson = async () => {
