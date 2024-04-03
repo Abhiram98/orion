@@ -36,6 +36,7 @@ public class MemqClusterSensor extends MemqSensor {
   public static final String TOPIC_CONFIG = "topicconfig";
   public static final String BROKERS = "/brokers";
   public static final String TOPICS = "/topics";
+  public static final String GOVERNOR = "/governor";
   public static final String RAW_BROKER_INFO = "rawBrokerInfo";
 
   @Override
@@ -61,6 +62,11 @@ public class MemqClusterSensor extends MemqSensor {
       }
 
       CuratorFramework zkClient = cluster.getZkClient();
+
+      byte[] governorData = zkClient.getData().forPath(GOVERNOR);
+      String governor = new String(governorData);
+      System.out.println(String.format("Cluster %s has governor %s", cluster.getClusterId(), governor));
+
       List<String> brokerNames = zkClient.getChildren().forPath(BROKERS);
       
       Map<String, List<String>> writeBrokerAssignments = new HashMap<>();
@@ -75,7 +81,11 @@ public class MemqClusterSensor extends MemqSensor {
         info.setClusterId(cluster.getClusterId());
         String hostname = NetworkUtils.getHostnameFromIpIfAvailable(broker.getBrokerIP());
         info.setHostname(hostname);
-        info.setIp(broker.getBrokerIP());
+        String ip = broker.getBrokerIP();
+        if (ip.equals(governor)) {
+          ip = "[G]" + ip;
+        }
+        info.setIp(ip);
         info.setNodeType(broker.getInstanceType());
         info.setNodeId(broker.getBrokerIP());
         info.setRack(broker.getLocality());
