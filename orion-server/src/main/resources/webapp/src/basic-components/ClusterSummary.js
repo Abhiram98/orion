@@ -37,7 +37,7 @@ export default function ClusterSummary(props) {
             <Typography
                 variant="caption"
             >
-              {cluster.attributes["governor.ip"]}
+              {cluster.attributes["cluster.context"]}
             </Typography>
           </Box>
         </Paper>
