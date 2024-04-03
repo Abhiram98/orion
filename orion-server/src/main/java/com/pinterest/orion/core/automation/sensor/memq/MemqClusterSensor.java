@@ -30,6 +30,8 @@ import com.pinterest.orion.core.PluginConfigurationException;
 import com.pinterest.orion.core.memq.MemqCluster;
 import com.pinterest.orion.utils.NetworkUtils;
 
+import static com.pinterest.orion.core.memq.MemqCluster.GOVERNOR_IP;
+
 public class MemqClusterSensor extends MemqSensor {
 
   public static final String WRITE_ASSIGNMENTS = "writeAssignments";
@@ -63,10 +65,6 @@ public class MemqClusterSensor extends MemqSensor {
 
       CuratorFramework zkClient = cluster.getZkClient();
 
-      byte[] governorData = zkClient.getData().forPath(GOVERNOR);
-      String governor = new String(governorData);
-      System.out.println(String.format("Cluster %s has governor %s", cluster.getClusterId(), governor));
-
       List<String> brokerNames = zkClient.getChildren().forPath(BROKERS);
       
       Map<String, List<String>> writeBrokerAssignments = new HashMap<>();
@@ -81,11 +79,7 @@ public class MemqClusterSensor extends MemqSensor {
         info.setClusterId(cluster.getClusterId());
         String hostname = NetworkUtils.getHostnameFromIpIfAvailable(broker.getBrokerIP());
         info.setHostname(hostname);
-        String ip = broker.getBrokerIP();
-        if (ip.equals(governor)) {
-          ip = "[G]" + ip;
-        }
-        info.setIp(ip);
+        info.setIp(broker.getBrokerIP());
         info.setNodeType(broker.getInstanceType());
         info.setNodeId(broker.getBrokerIP());
         info.setRack(broker.getLocality());
@@ -112,9 +106,14 @@ public class MemqClusterSensor extends MemqSensor {
         TopicConfig topicConfig = gson.fromJson(new String(topicData), TopicConfig.class);
         topicConfigMap.put(topic, topicConfig);
       }
+
+      byte[] governorData = zkClient.getData().forPath(GOVERNOR);
+      String governorIp = new String(governorData);
+
       setAttribute(cluster, TOPIC_CONFIG, topicConfigMap);
       setAttribute(cluster, RAW_BROKER_INFO, rawBrokerMap);
       setAttribute(cluster, WRITE_ASSIGNMENTS, writeBrokerAssignments);
+      setAttribute(cluster, GOVERNOR_IP, governorIp);
     } catch (Exception e) {
       e.printStackTrace();
       throw e;

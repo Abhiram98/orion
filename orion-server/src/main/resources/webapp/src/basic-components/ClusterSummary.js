@@ -30,7 +30,20 @@ export default function ClusterSummary(props) {
         </Box>
       </Paper>
     );
-  } else {
+  } else if (cluster.attributes["governor.ip"]) {
+    return (
+        <Paper variant="outlined">
+          <Box mx={2} my={1}>
+            <Typography
+                variant="caption"
+            >
+              {cluster.attributes["governor.ip"]}
+            </Typography>
+          </Box>
+        </Paper>
+    );
+  }
+  else {
     return <div></div>;
   }
 }
