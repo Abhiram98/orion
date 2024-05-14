@@ -535,7 +535,12 @@ public class GenericClusterWideAction {
 
     @Override
     public Action getChildAction() {
-      return new NodeDecommissionAction();
+      return new NodeAction() {
+        @Override
+        public String getName() {
+          return "ReplaceNodeAction";
+        }
+      };
     }
 
     @Override
