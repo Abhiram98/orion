@@ -44,18 +44,25 @@ public class TeletraanClient {
         this.teletraanToken = teletraanToken;
     }
 
-    private String getCheckHostStatusUrl(String hostName) {
+    protected String getCheckHostStatusUrl(String hostName) {
         return String.format(getTeletraanUrl() + CHECK_HOST_STATUS_URL_POSTFIX, hostName);
     }
 
-    private String getTerminateHostUrl(String clusterId) {
+    protected String getTerminateHostUrl(String clusterId) {
         return String.format(getTeletraanUrl() + TERMINATE_HOST_URL_POSTFIX, clusterId);
     }
 
-    private String getReplaceHostUrl(String clusterId) {
+    protected String getReplaceHostUrl(String clusterId) {
         return String.format(getTeletraanUrl() + REPLACE_HOST_URL_POSTFIX, clusterId);
     }
 
+    /**
+     * Get the token header for the Teletraan API.
+     * It uses overrideTeletraanToken. If it is not set, it uses the saved token.
+     * @param overrideTeletraanToken
+     * @return String token header
+     * @throws RuntimeException if the token is not set either in the override or saved token.
+     */
     protected String getTokenHeader(String overrideTeletraanToken) throws RuntimeException {
         if (overrideTeletraanToken != null && !overrideTeletraanToken.isEmpty()) {
             return "token " + overrideTeletraanToken;
@@ -67,6 +74,12 @@ public class TeletraanClient {
         return "token " + savedToken;
     }
 
+    /**
+     * Generate a StringEntity for the host to be replaced or terminated.
+     * @param instanceId
+     * @return StringEntity
+     * @throws UnsupportedEncodingException
+     */
     protected StringEntity generateHostEntity(String instanceId) throws UnsupportedEncodingException {
         JsonArray hostArray = new JsonArray();
         hostArray.add(instanceId);
