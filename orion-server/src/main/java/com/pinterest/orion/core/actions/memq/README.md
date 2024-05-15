@@ -10,10 +10,10 @@ Project Link: https://github.com/pinterest/teletraan
 
 ### Introduction
 
-To use the MemQ actions, you need to create a new action class to extend the abstract class. 
+To use the MemQ actions, you need to create a new action class that extends the abstract class.
 
-In the new class, you need to override getTeletraanClient() method by constructing TeletraanClient with the right configuration. 
+In the new class, override the getTeletraanClient() method by constructing a TeletraanClient with the correct configuration.
 
-You also need to override getEC2Helper() method in your action class with your own way to get EC2 instance information. 
+You also need to override the getEC2Helper() method in your action class to retrieve EC2 instance information in your own way.
 
-If the time value does not fit your case, you can override get time methods to use your own check interval or timeout values. 
+If the default time value does not suit your requirements, you can override the getTime methods to set your desired check interval or timeout values.
