@@ -22,7 +22,7 @@ public class MemqTeletraanBrokerReplacementAction extends NodeAction {
         }
         // Get the cluster ID and the number of brokers before the replacement.
         String clusterId = node.getCluster().getClusterId();
-        int startBrokerCount = getRunningBrokerCount(clusterId);
+        int startBrokerCount = getRunningBrokerCount(getClusterBrokerPrefix(clusterId));
         if (startBrokerCount == -1) {
             markFailed("Unable to get running broker count. Please check the orion logs for more information.");
             return;
@@ -73,7 +73,7 @@ public class MemqTeletraanBrokerReplacementAction extends NodeAction {
         // If the broker count is >= the initial count, the replacement is successful.
         node.getCluster().getNodeMap().remove(node.getCurrentNodeInfo().getNodeId());
         while (true) {
-            int currentBrokerCount = getRunningBrokerCount(clusterId);
+            int currentBrokerCount = getRunningBrokerCount(getClusterBrokerPrefix(clusterId));
             long elapsedTime = System.currentTimeMillis() - startTime;
             if (currentBrokerCount >= startBrokerCount) {
                 getResult().appendOut("Replacement host has been added to the cluster. " +
@@ -112,11 +112,11 @@ public class MemqTeletraanBrokerReplacementAction extends NodeAction {
     /**
      * Get the number of running brokers in the cluster.
      * TODO: When memq agent is ready, it will be used to get the count of running brokers.
-     * @param clusterId The cluster ID.
+     * @param  prefix The prefix of the broker host names.
      * @return The number of running brokers in the cluster.
      */
-    protected int getRunningBrokerCount(String clusterId) {
-        return getEC2Helper().getRunningBrokerCount(getClusterBrokerPrefix(clusterId));
+    protected int getRunningBrokerCount(String prefix) {
+        return getEC2Helper().getRunningBrokerCount(prefix);
     }
 
     protected EC2Helper getEC2Helper() {
