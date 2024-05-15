@@ -1,11 +1,7 @@
 package com.pinterest.orion.utils;
 
 public abstract class EC2Helper {
-    public static int getRunningBrokerCount(String clusterId) {
-        return -1;
-    }
+    public abstract int getRunningBrokerCount(String prefix);
 
-    public static String getInstanceIdUsingHostName(String fullHostName, String region) {
-        return null;
-    }
+    public abstract String getInstanceIdUsingHostName(String fullHostName, String region);
 }

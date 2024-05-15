@@ -7,7 +7,7 @@ import com.pinterest.orion.utils.TeletraanClient;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-public class MemqTeletraanBrokerReplacementAction extends NodeAction {
+public abstract class MemqTeletraanBrokerReplacementAction extends NodeAction {
 
     private static final int POST_TERMINATION_CHECK_WAIT_TIME_MS = 10_000; // 10 seconds
     private static final int TERMINATION_CHECK_TIME_INTERVAL_MS = 60_000; // 1 minute
@@ -105,10 +105,6 @@ public class MemqTeletraanBrokerReplacementAction extends NodeAction {
         return "MemqTeletraanBrokerReplacementAction";
     }
 
-    protected String getClusterBrokerPrefix(String clusterId) {
-        return clusterId;
-    }
-
     /**
      * Get the number of running brokers in the cluster.
      * TODO: When memq agent is ready, it will be used to get the count of running brokers.
@@ -117,14 +113,6 @@ public class MemqTeletraanBrokerReplacementAction extends NodeAction {
      */
     protected int getRunningBrokerCount(String prefix) {
         return getEC2Helper().getRunningBrokerCount(prefix);
-    }
-
-    protected EC2Helper getEC2Helper() {
-        return null;
-    }
-
-    protected TeletraanClient getTeletraanClient() {
-        return null;
     }
 
     protected int getPostTerminationCheckWaitTimeMs() {
@@ -146,4 +134,10 @@ public class MemqTeletraanBrokerReplacementAction extends NodeAction {
     protected int getReplacementCheckTimeoutMs() {
         return REPLACEMENT_CHECK_TIMEOUT_MS;
     }
+
+    protected abstract EC2Helper getEC2Helper();
+
+    protected abstract TeletraanClient getTeletraanClient();
+
+    protected abstract String getClusterBrokerPrefix(String clusterId);
 }
