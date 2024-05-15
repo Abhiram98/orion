@@ -29,7 +29,7 @@ public abstract class MemqEC2BrokerDecommissionAction extends NodeDecommissionAc
         String hostName = node.getCurrentNodeInfo().getHostname();
         String region = node.getCluster().getAttribute(MemqCluster.CLUSTER_REGION).getValue();
         String instanceId = getEC2Helper().getInstanceIdUsingHostName(hostName, region);
-        try (Ec2Client ec2Client = Ec2Client.create()) {
+        try (Ec2Client ec2Client = getEc2Client()) {
             boolean hasTerminating = doTermination(ec2Client, instanceId);
             if (!hasTerminating) {
                 markFailed("Could not terminate the instance " + instanceId);
@@ -69,6 +69,10 @@ public abstract class MemqEC2BrokerDecommissionAction extends NodeDecommissionAc
     @Override
     public String getName() {
         return "MemqEC2BrokerDecommissionAction";
+    }
+
+    protected Ec2Client getEc2Client() {
+        return Ec2Client.create();
     }
 
     protected abstract EC2Helper getEC2Helper();
