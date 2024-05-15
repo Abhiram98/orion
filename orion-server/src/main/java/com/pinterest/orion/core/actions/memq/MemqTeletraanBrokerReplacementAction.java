@@ -106,7 +106,7 @@ public class MemqTeletraanBrokerReplacementAction extends NodeAction {
     }
 
     protected String getClusterBrokerPrefix(String clusterId) {
-        return getMemqPrefix() + clusterId;
+        return clusterId;
     }
 
     /**
@@ -125,10 +125,6 @@ public class MemqTeletraanBrokerReplacementAction extends NodeAction {
 
     protected TeletraanClient getTeletraanClient() {
         return null;
-    }
-
-    protected String getMemqPrefix() {
-        return "";
     }
 
     protected int getPostTerminationCheckWaitTimeMs() {
